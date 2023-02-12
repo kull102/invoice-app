@@ -100,14 +100,12 @@
 
 <script>
 import {useStore} from "../stores/index"
-import { storeToRefs } from 'pinia'
+import { ref, watch } from 'vue'
 export default{
     name:"invoiceview",
     data(){
         return{
-            currentInvoice:null,
-            editInvoice:this.myStore.editInvoice
-        }
+            currentInvoice:null,        }
     },
     created(){
         this.getCurrentInvoice()
@@ -115,12 +113,18 @@ export default{
     ,
     setup() {
     const myStore = useStore()
-    const { editInvoice } = storeToRefs(myStore)
-    return {  editInvoice,myStore }
+    const checkEdit = ref(null)
+    watch(() => {
+      if(!myStore.editInvoice){
+        checkEdit.value = true
+      }
+      else{checkEdit.value = false}
+    })
+    return {  myStore, checkEdit }
     },
     methods:{
         getCurrentInvoice(){
-            this.myStore.setCurrentInvoice(this.$route.params)
+            this.myStore.setCurrentInvoice(this.$route.params.invoiceId)
             this.currentInvoice = this.myStore.currentInvoiceArray[0]
         },
         toggleEditInvoice(){
@@ -139,11 +143,11 @@ export default{
           this.myStore.updatePendingDB(docId)
         }
     },
-    watch:{
-      editInvoice(){
-        if(!this.editInvoice){
-          this.currentInvoice = this.myStore.currentInvoiceArray[0]
-        }
+    watch: {
+      checkEdit(){
+        if(this.checkEdit){
+            this.currentInvoice = this.myStore.currentInvoiceArray[0]
+          }
       }
     }
 }

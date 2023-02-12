@@ -19,14 +19,16 @@ export  const useStore = defineStore('store', {
       this.modalActive = !this.modalActive
     },
     setCurrentInvoice(id){
-      this.currentInvoiceArray = this.invoiceData.filter(invoice => invoice.invoiceId = id)
+      this.currentInvoiceArray = this.invoiceData.filter(invoice => 
+         invoice.invoiceId === id
+      )
     },
     editToggle(){
       this.editInvoice =!this.editInvoice
     },
     deleteInvoice(id){
       this.invoiceData = this.invoiceData.filter(invoice => {
-        return invoice.invoiceId !== id
+        return invoice.docId !== id
       })
     },
     updateStatusToPaid(id){
